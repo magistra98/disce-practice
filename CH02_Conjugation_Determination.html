@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Determine the Conjugation — Verb Practice</title>
+<style>
+  :root {
+    --ink:        #1C2333;
+    --ink-2:      #262E45;
+    --parchment:  #F3ECDD;
+    --parchment-2:#FBF7EE;
+    --gold:       #C9A15B;
+    --gold-deep:  #A9793E;
+    --text-ink:   #2A2117;
+    --green-text: #2F6B4F;
+    --green-fill: #E3EEE4;
+    --green-ring: #4F8E6C;
+    --red-text:   #8A2E22;
+    --red-fill:   #F5E1DB;
+    --red-ring:   #B4543F;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(circle at 15% 10%, #232B41 0%, transparent 45%),
+      radial-gradient(circle at 85% 90%, #232B41 0%, transparent 40%),
+      var(--ink);
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+    color: var(--text-ink);
+    padding: 32px 16px 64px;
+    min-height: 100vh;
+  }
+
+  .sheet {
+    max-width: 920px;
+    margin: 0 auto;
+    background: var(--parchment);
+    border: 1px solid var(--gold-deep);
+    box-shadow: 0 0 0 6px var(--ink), 0 20px 50px rgba(0,0,0,0.45);
+  }
+
+  header {
+    background: var(--ink);
+    color: var(--parchment);
+    padding: 28px 32px 24px;
+    border-bottom: 3px solid var(--gold);
+  }
+
+  header .eyebrow {
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 10px;
+  }
+
+  header h1 {
+    margin: 0 0 12px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 700;
+    font-size: clamp(22px, 4vw, 30px);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 1.25;
+  }
+
+  header p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #E6DCC3;
+    max-width: 62ch;
+  }
+
+  .scoreboard {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    background: var(--parchment-2);
+    padding: 14px 32px;
+    border-bottom: 1px solid var(--gold-deep);
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+  }
+
+  .scoreboard .tally {
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    color: var(--ink);
+  }
+
+  .scoreboard .tally span {
+    color: var(--gold-deep);
+  }
+
+  button.reset {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    background: transparent;
+    border: 1px solid var(--gold-deep);
+    color: var(--ink);
+    padding: 7px 14px;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+  }
+
+  button.reset:hover { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+  button.reset:focus-visible { outline: 3px solid var(--gold-deep); outline-offset: 2px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 1px;
+    background: #DCD0B2;
+    border-top: 1px solid #DCD0B2;
+  }
+
+  .card {
+    padding: 20px 28px;
+    background: var(--parchment);
+  }
+
+  .word-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .numeral {
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--gold-deep);
+    letter-spacing: 0.04em;
+    min-width: 42px;
+    white-space: nowrap;
+  }
+
+  .word {
+    font-size: 19px;
+    font-weight: 700;
+    font-style: italic;
+    color: var(--ink);
+  }
+
+  .answer-row {
+    display: flex;
+    align-items: stretch;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .field {
+    flex: 1 1 150px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .field label {
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #6B5E44;
+  }
+
+  .field input {
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+    font-size: 15px;
+    padding: 9px 10px;
+    background: var(--parchment-2);
+    border: 1px solid var(--gold-deep);
+    color: var(--text-ink);
+  }
+
+  .field input:focus-visible {
+    outline: 3px solid var(--gold-deep);
+    outline-offset: 1px;
+  }
+
+  .check-btn {
+    align-self: flex-end;
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    background: var(--ink);
+    color: var(--parchment);
+    border: 1px solid var(--ink);
+    padding: 9px 16px;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  .check-btn:hover { background: var(--ink-2); }
+  .check-btn:focus-visible { outline: 3px solid var(--gold-deep); outline-offset: 2px; }
+
+  .seal {
+    align-self: flex-end;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-width: 74px;
+    justify-content: center;
+    padding: 9px 12px;
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 0.08em;
+    border-radius: 50%;
+    border: 2px solid transparent;
+    aspect-ratio: 1 / 1;
+    height: 44px;
+    width: 44px;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), opacity 0.2s ease;
+  }
+
+  .seal.show { opacity: 1; transform: scale(1); }
+
+  .seal.correct { background: var(--green-fill); color: var(--green-text); border-color: var(--green-ring); }
+  .seal.incorrect { background: var(--red-fill); color: var(--red-text); border-color: var(--red-ring); }
+
+  .seal svg { width: 14px; height: 14px; flex: none; margin-right: 4px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .seal { transition: none; }
+  }
+
+  footer.key {
+    padding: 18px 32px 26px;
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+    background: var(--parchment-2);
+    border-top: 1px solid var(--gold-deep);
+  }
+
+  footer.key h2 {
+    margin: 0 0 10px;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    color: var(--gold-deep);
+  }
+
+  .key-row { display: flex; gap: 22px; flex-wrap: wrap; align-items: center; font-size: 13px; }
+  .key-item { display: flex; align-items: center; gap: 8px; }
+  .key-item span.key-swatch { margin-right: 8px; }
+  .key-swatch {
+    width: 26px; height: 26px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-family: Georgia, serif; font-weight: 700; font-size: 11px; border: 2px solid transparent;
+  }
+  .key-swatch.correct { background: var(--green-fill); color: var(--green-text); border-color: var(--green-ring); }
+  .key-swatch.incorrect { background: var(--red-fill); color: var(--red-text); border-color: var(--red-ring); }
+
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    padding: 0; margin: -1px; overflow: hidden;
+    clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+  }
+
+  @media (max-width: 480px) {
+    header, .scoreboard, .card, footer.key { padding-left: 18px; padding-right: 18px; }
+    .check-btn, .seal { align-self: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <header>
+    <p class="eyebrow">Chapter 2 &middot; Verb Practice</p>
+    <h1>Determine the Conjugation</h1>
+    <p>Use the present active infinitive to determine the conjugation of each verb below. Type the word &mdash; <em>first</em>, <em>second</em>, <em>third</em>, or <em>fourth</em> &mdash; not the number.</p>
+  </header>
+
+  <div class="scoreboard">
+    <p class="tally" id="tally" role="status" aria-live="polite">Checked <span id="tally-count">0</span> of 16 &mdash; <span id="tally-correct">0</span> correct</p>
+    <button class="reset" id="reset-btn" type="button">Reset all</button>
+  </div>
+
+  <div class="grid" id="quiz-grid"></div>
+
+  <footer class="key">
+    <h2>Key</h2>
+    <div class="key-row">
+      <div class="key-item"><span class="key-swatch correct">ITA</span><span>Correct</span></div>
+      <div class="key-item"><span class="key-swatch incorrect">NON</span><span>Not yet &mdash; try again</span></div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function () {
+  // ---- Data: edit this list to reuse the template for a new chapter ----
+  var VERBS = [
+    { word: "ambul\u0101re", answer: "first" },
+    { word: "currere",       answer: "third" },
+    { word: "aud\u012Bre",   answer: "fourth" },
+    { word: "terr\u0113re",  answer: "second" },
+    { word: "ascendere",     answer: "third" },
+    { word: "err\u0101re",   answer: "first" },
+    { word: "sed\u0113re",   answer: "second" },
+    { word: "repellere",     answer: "third" },
+    { word: "dorm\u012Bre",  answer: "fourth" },
+    { word: "tim\u0113re",   answer: "second" },
+    { word: "respond\u0113re", answer: "second" },
+    { word: "petere",        answer: "third" },
+    { word: "am\u0101re",    answer: "first" },
+    { word: "arripere",      answer: "third" },
+    { word: "habit\u0101re", answer: "first" },
+    { word: "excipere",      answer: "third" }
+  ];
+
+  var ROMAN = ["I","II","III","IV","V","VI","VII","VIII","IX","X","XI","XII","XIII","XIV","XV","XVI"];
+
+  var CHECK_ICON = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 12l6 6L20 6" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  var CROSS_ICON = '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 5l14 14M19 5L5 19" stroke="currentColor" stroke-width="3" stroke-linecap="round"/></svg>';
+
+  var grid = document.getElementById("quiz-grid");
+  var results = new Array(VERBS.length).fill(null); // null = unchecked, true/false after check
+
+  VERBS.forEach(function (verb, i) {
+    var card = document.createElement("div");
+    card.className = "card";
+
+    var inputId = "answer-" + i;
+    var sealId = "seal-" + i;
+
+    card.innerHTML =
+      '<div class="word-row">' +
+        '<span class="numeral">' + ROMAN[i] + '.</span>' +
+        '<span class="word">' + verb.word + '</span>' +
+      '</div>' +
+      '<div class="answer-row">' +
+        '<div class="field">' +
+          '<label for="' + inputId + '">Your answer</label>' +
+          '<input type="text" id="' + inputId + '" autocomplete="off" spellcheck="false">' +
+        '</div>' +
+        '<button class="check-btn" type="button" data-index="' + i + '">Check</button>' +
+        '<span class="seal" id="' + sealId + '" role="status" aria-live="polite"></span>' +
+      '</div>';
+
+    grid.appendChild(card);
+
+    var input = card.querySelector("#" + inputId);
+    var button = card.querySelector(".check-btn");
+    var seal = card.querySelector("#" + sealId);
+
+    function check() {
+      var val = input.value.trim().toLowerCase();
+      if (!val) { input.focus(); return; }
+      var correct = val === verb.answer;
+
+      seal.classList.remove("show", "correct", "incorrect");
+      // force reflow so the pop-in animation replays on repeated checks
+      void seal.offsetWidth;
+      seal.classList.add(correct ? "correct" : "incorrect");
+      seal.innerHTML = (correct ? CHECK_ICON : CROSS_ICON) + (correct ? "ITA" : "NON");
+      seal.classList.add("show");
+
+      var wasUnchecked = results[i] === null;
+      results[i] = correct;
+      updateTally();
+    }
+
+    button.addEventListener("click", check);
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); check(); }
+    });
+  });
+
+  function updateTally() {
+    var checked = results.filter(function (r) { return r !== null; }).length;
+    var correct = results.filter(function (r) { return r === true; }).length;
+    document.getElementById("tally-count").textContent = checked;
+    document.getElementById("tally-correct").textContent = correct;
+  }
+
+  document.getElementById("reset-btn").addEventListener("click", function () {
+    results = new Array(VERBS.length).fill(null);
+    updateTally();
+    var inputs = grid.querySelectorAll("input");
+    var seals = grid.querySelectorAll(".seal");
+    inputs.forEach(function (inp) { inp.value = ""; });
+    seals.forEach(function (s) { s.classList.remove("show", "correct", "incorrect"); s.innerHTML = ""; });
+    inputs[0].focus();
+  });
+})();
+</script>
+
+</body>
+</html>
