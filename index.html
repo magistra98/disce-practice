@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Disce Practice — Latin Verb Quizzes</title>
+<style>
+  :root {
+    --ink:        #1C2333;
+    --ink-2:      #262E45;
+    --parchment:  #F3ECDD;
+    --parchment-2:#FBF7EE;
+    --gold:       #C9A15B;
+    --gold-deep:  #A9793E;
+    --text-ink:   #2A2117;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(circle at 15% 10%, #232B41 0%, transparent 45%),
+      radial-gradient(circle at 85% 90%, #232B41 0%, transparent 40%),
+      var(--ink);
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+    color: var(--text-ink);
+    padding: 32px 16px 64px;
+    min-height: 100vh;
+  }
+
+  .sheet {
+    max-width: 780px;
+    margin: 0 auto;
+    background: var(--parchment);
+    border: 1px solid var(--gold-deep);
+    box-shadow: 0 0 0 6px var(--ink), 0 20px 50px rgba(0,0,0,0.45);
+  }
+
+  header {
+    background: var(--ink);
+    color: var(--parchment);
+    padding: 32px 32px 26px;
+    border-bottom: 3px solid var(--gold);
+  }
+
+  header .eyebrow {
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 10px;
+  }
+
+  header h1 {
+    margin: 0 0 12px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-weight: 700;
+    font-size: clamp(26px, 5vw, 36px);
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    line-height: 1.2;
+  }
+
+  header p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.55;
+    color: #E6DCC3;
+    max-width: 56ch;
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .quiz-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 22px 32px;
+    border-bottom: 1px solid #DCD0B2;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .quiz-row:last-child { border-bottom: none; }
+
+  .quiz-row:hover { background: var(--parchment-2); }
+
+  .quiz-numeral {
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: var(--gold-deep);
+    min-width: 44px;
+  }
+
+  .quiz-info { flex: 1 1 auto; }
+
+  .quiz-title {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 0 0 4px;
+  }
+
+  .quiz-desc {
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+    font-size: 13px;
+    color: #6B5E44;
+    margin: 0;
+  }
+
+  .quiz-open {
+    flex: none;
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    background: var(--ink);
+    color: var(--parchment);
+    border: 1px solid var(--ink);
+    padding: 9px 16px;
+    white-space: nowrap;
+  }
+
+  .quiz-row:hover .quiz-open { background: var(--ink-2); }
+
+  a.quiz-row:focus-visible {
+    outline: 3px solid var(--gold-deep);
+    outline-offset: -3px;
+  }
+
+  footer {
+    padding: 18px 32px 26px;
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+    background: var(--parchment-2);
+    border-top: 1px solid var(--gold-deep);
+    font-size: 12px;
+    color: #6B5E44;
+    text-align: center;
+  }
+
+  @media (max-width: 480px) {
+    header, .quiz-row, footer { padding-left: 18px; padding-right: 18px; }
+    .quiz-row { flex-wrap: wrap; }
+    .quiz-open { margin-left: 64px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sheet">
+
+  <header>
+    <p class="eyebrow">Disce Practice</p>
+    <h1>Latin Verb Quizzes</h1>
+    <p><em>Disce</em> &mdash; "learn." A growing library of self-checking practice
+    exercises. Pick a chapter below to begin.</p>
+  </header>
+
+  <nav class="list" id="quiz-list" aria-label="Available quizzes"></nav>
+
+  <footer>More chapters are added throughout the term &mdash; check back for updates.</footer>
+
+</div>
+
+<script>
+  // ---- Data: add a new chapter here as it's published ----
+  var QUIZZES = [
+    {
+      chapter: "II",
+      title: "Determine the Conjugation",
+      description: "Identify the conjugation (1st–4th) of 16 Latin verbs from their infinitive.",
+      file: "CH02_Conjugation_Determination.html"
+    }
+  ];
+
+  var list = document.getElementById("quiz-list");
+  QUIZZES.forEach(function (q) {
+    var a = document.createElement("a");
+    a.className = "quiz-row";
+    a.href = q.file;
+    a.innerHTML =
+      '<span class="quiz-numeral">' + q.chapter + '</span>' +
+      '<div class="quiz-info">' +
+        '<p class="quiz-title">' + q.title + '</p>' +
+        '<p class="quiz-desc">' + q.description + '</p>' +
+      '</div>' +
+      '<span class="quiz-open">Open &rarr;</span>';
+    list.appendChild(a);
+  });
+</script>
+
+</body>
+</html>
