@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 3: The Accusative Case</title>
+<style>
+  :root {
+    --ink: #1C2333;
+    --ink-2: #262E45;
+    --parchment: #F3ECDD;
+    --parchment-2: #FBF7EE;
+    --gold: #C9A15B;
+    --gold-deep: #A9793E;
+    --text-ink: #2A2117;
+    --green-text: #2F6B4F;
+    --green-fill: #E3EEE4;
+    --green-ring: #4F8E6C;
+    --red-text: #8A2E22;
+    --red-fill: #F5E1DB;
+    --red-ring: #B4543F;
+    --hairline: #DCD0B2;
+    --header-sub: #E6DCC3;
+    --field-label: #6B5E44;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    padding: 40px 16px;
+    background-color: var(--ink);
+    background-image:
+      radial-gradient(circle at 15% 20%, #232B41 0%, transparent 45%),
+      radial-gradient(circle at 85% 75%, #232B41 0%, transparent 45%);
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+    color: var(--text-ink);
+  }
+
+  .sheet {
+    max-width: 920px;
+    margin: 0 auto;
+    border: 1px solid var(--gold-deep);
+    box-shadow: 0 0 0 6px var(--ink), 0 25px 60px rgba(0,0,0,0.45);
+    background: var(--parchment);
+    overflow: hidden;
+  }
+
+  header.banner {
+    background: var(--ink);
+    color: var(--parchment);
+    padding: 34px 40px 28px;
+    border-bottom: 3px solid var(--gold);
+    text-align: center;
+  }
+
+  .eyebrow {
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin: 0 0 10px;
+  }
+
+  h1 {
+    font-family: Georgia, "Times New Roman", serif;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: 30px;
+    margin: 0 0 14px;
+  }
+
+  header.banner p {
+    color: var(--header-sub);
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 640px;
+    margin: 6px auto;
+  }
+
+  .scoreboard {
+    background: var(--parchment-2);
+    border-bottom: 1px solid var(--hairline);
+    padding: 16px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+  }
+
+  .scoreboard .tally {
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 0.03em;
+    color: var(--text-ink);
+  }
+
+  .scoreboard .tally span {
+    color: var(--gold-deep);
+  }
+
+  button.reset-btn {
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.03em;
+    background: var(--parchment-2);
+    color: var(--gold-deep);
+    border: 1px solid var(--gold-deep);
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  button.reset-btn:hover { background: #F0E6D0; }
+
+  .activity-title {
+    font-family: Georgia, "Times New Roman", serif;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    font-size: 18px;
+    color: var(--gold-deep);
+    background: var(--parchment);
+    padding: 22px 40px 6px;
+    margin: 0;
+  }
+
+  .activity-instructions {
+    padding: 0 40px 14px;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text-ink);
+    max-width: 760px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+    gap: 1px;
+    background: var(--hairline);
+    border-top: 1px solid var(--hairline);
+    border-bottom: 1px solid var(--hairline);
+  }
+
+  .grid.single-col { grid-template-columns: 1fr; }
+
+  .card {
+    background: var(--parchment);
+    padding: 22px 28px;
+  }
+
+  .card .qnum {
+    font-family: Georgia, "Times New Roman", serif;
+    color: var(--gold-deep);
+    font-weight: bold;
+    font-size: 15px;
+    margin-right: 6px;
+  }
+
+  .card .sentence {
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0 0 6px;
+  }
+
+  .card .word-heading {
+    font-size: 16px;
+    line-height: 1.5;
+    margin: 0 0 14px;
+  }
+
+  .card .word-heading .latin-word {
+    font-style: italic;
+    font-weight: bold;
+    font-size: 19px;
+  }
+
+  .answer-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .answer-row + .answer-row {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--hairline);
+  }
+
+  .answer-row label.field-label {
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--field-label);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .answer-field { flex: 1 1 160px; min-width: 160px; }
+
+  input[type="text"] {
+    width: 100%;
+    font-family: "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+    font-size: 15px;
+    padding: 8px 10px;
+    background: var(--parchment-2);
+    border: 1px solid var(--gold-deep);
+    border-radius: 3px;
+    color: var(--text-ink);
+  }
+
+  input[type="text"]:focus-visible {
+    outline: 3px solid var(--gold-deep);
+    outline-offset: 1px;
+  }
+
+  button.check-btn {
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 0.03em;
+    background: var(--ink);
+    color: var(--parchment);
+    border: none;
+    padding: 9px 18px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  button.check-btn:hover { background: var(--ink-2); }
+
+  button.check-btn:focus-visible {
+    outline: 3px solid var(--gold-deep);
+    outline-offset: 2px;
+  }
+
+  .badge {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+    font-size: 9px;
+    font-weight: bold;
+    letter-spacing: 0.05em;
+    border: 2px solid transparent;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.25s, transform 0.35s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  .badge.show { opacity: 1; transform: scale(1); }
+
+  .badge svg { width: 16px; height: 16px; margin-bottom: 1px; }
+
+  .badge.correct {
+    background: var(--green-fill);
+    color: var(--green-text);
+    border-color: var(--green-ring);
+  }
+
+  .badge.incorrect {
+    background: var(--red-fill);
+    color: var(--red-text);
+    border-color: var(--red-ring);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .badge { transition: opacity 0.15s; transform: none; }
+  }
+
+  footer.key {
+    background: var(--parchment-2);
+    padding: 22px 40px 30px;
+    font-family: "Trebuchet MS", "Segoe UI", Verdana, sans-serif;
+    font-size: 13px;
+    color: var(--field-label);
+  }
+
+  footer.key .key-title {
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 11px;
+    margin-bottom: 12px;
+    color: var(--field-label);
+  }
+
+  footer.key .key-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  footer.key .badge {
+    width: 26px;
+    height: 26px;
+    opacity: 1;
+    transform: scale(1);
+    font-size: 0;
+    flex-shrink: 0;
+  }
+
+  footer.key .badge svg { width: 12px; height: 12px; margin: 0; }
+
+  @media (max-width: 480px) {
+    header.banner, .scoreboard, .activity-title, .activity-instructions, footer.key {
+      padding-left: 22px;
+      padding-right: 22px;
+    }
+    .card { padding: 18px 20px; }
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header class="banner">
+    <p class="eyebrow">Disce &middot; Capitulum III</p>
+    <h1>The Accusative Case</h1>
+    <p>Activity I reviews the accusative case and its singular/plural endings. Activity II asks you to give the meaning, accusative singular, and accusative plural for each Latin word.</p>
+  </header>
+
+  <div class="scoreboard">
+    <div class="tally">Score: <span id="scoreCount">0</span> / <span id="scoreTotal">0</span> correct</div>
+    <button class="reset-btn" id="resetBtn" type="button">Reset All</button>
+  </div>
+
+  <h2 class="activity-title">I. Accusative Case Basics</h2>
+  <p class="activity-instructions">Type your answer for each item below.</p>
+  <div class="grid" id="gridFree"></div>
+
+  <h2 class="activity-title">II. Accusative Practice</h2>
+  <p class="activity-instructions">For each Latin word, give its meaning, accusative singular, and accusative plural.</p>
+  <div class="grid single-col" id="gridWords"></div>
+
+  <footer class="key">
+    <p class="key-title">Key</p>
+    <div class="key-row">
+      <span class="badge correct" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l6 6L20 6"/></svg>
+      </span>
+      <span><strong>ITA</strong> &mdash; correct</span>
+    </div>
+    <div class="key-row">
+      <span class="badge incorrect" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 5l14 14M19 5L5 19"/></svg>
+      </span>
+      <span><strong>NON</strong> &mdash; try again</span>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // ---- Activity I: accusative case basics (single fill-in-the-blank each) ----
+  var FREE_ITEMS = [
+    { sentence: "The Accusative Case is used for:", answer: "Direct Objects" },
+    { sentence: "The Accusative Singular of puella, ae, f. is:", answer: "puellam" },
+    { sentence: "The Accusative Plural of puella, ae, f. is:", answer: "puellas" },
+    { sentence: "The Accusative Singular of servus, ī, m. is:", answer: "servum" },
+    { sentence: "The Accusative Plural of servus, ī, m. is:", answer: "servos" },
+    { sentence: "The Accusative Singular of magister, -ī, m. is:", answer: "magistrum" },
+    { sentence: "The Accusative Plural of magistra, -ae, f. is:", answer: "magistras" }
+  ];
+
+  // ---- Activity II: word table (meaning, accusative singular, accusative plural per word) ----
+  var WORD_ITEMS = [
+    { word: "discipulus, -ī, m.", meaning: "male student", singular: "discipulum", plural: "discipulos" },
+    { word: "domus, -ī, f.", meaning: "house", singular: "domum", plural: "domos" },
+    { word: "cibus, ī, m.", meaning: "food", singular: "cibum", plural: "cibos" },
+    { word: "ancilla, ae, f.", meaning: "slave woman", singular: "ancillam", plural: "ancillas" },
+    { word: "pecunia, -ae, f.", meaning: "money", singular: "pecuniam", plural: "pecunias" },
+    { word: "aqua, ae, f.", meaning: "water", singular: "aquam", plural: "aquas" },
+    { word: "ludus, -ī, m.", meaning: "school", singular: "ludum", plural: "ludos" },
+    { word: "porcus, ī, m.", meaning: "pig", singular: "porcum", plural: "porcos" },
+    { word: "filia, -ae, f.", meaning: "daughter", singular: "filiam", plural: "filias" },
+    { word: "lupus, ī, m.", meaning: "wolf", singular: "lupum", plural: "lupos" }
+  ];
+
+  var ROMAN = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII", "XIII", "XIV", "XV", "XVI", "XVII"];
+
+  var CHECK_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M4 12l6 6L20 6"/></svg>';
+  var CROSS_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 5l14 14M19 5L5 19"/></svg>';
+
+  var solved = {};
+  var scoreEl = document.getElementById("scoreCount");
+  var totalEl = document.getElementById("scoreTotal");
+  var TOTAL_CHECKS = FREE_ITEMS.length + (WORD_ITEMS.length * 3);
+  totalEl.textContent = TOTAL_CHECKS;
+
+  function updateScore() {
+    var count = 0;
+    for (var k in solved) { if (solved[k]) count++; }
+    scoreEl.textContent = count;
+  }
+
+  function showBadge(badgeEl, isCorrect) {
+    badgeEl.className = "badge " + (isCorrect ? "correct" : "incorrect");
+    badgeEl.innerHTML = (isCorrect ? CHECK_ICON : CROSS_ICON) +
+      '<span>' + (isCorrect ? "ITA" : "NON") + '</span>';
+    badgeEl.setAttribute("aria-label", isCorrect ? "Ita, correct" : "Non, incorrect");
+    badgeEl.classList.remove("show");
+    void badgeEl.offsetWidth;
+    badgeEl.classList.add("show");
+  }
+
+  function wireField(containerCard, id, expectedAnswer) {
+    var input = containerCard.querySelector("#" + id + "-input");
+    var badge = containerCard.querySelector("#" + id + "-badge");
+    var checkBtn = containerCard.querySelector("#" + id + "-check");
+
+    function check() {
+      var val = input.value.trim().toLowerCase();
+      var isCorrect = val === expectedAnswer.toLowerCase();
+      solved[id] = isCorrect;
+      showBadge(badge, isCorrect);
+      updateScore();
+    }
+
+    checkBtn.addEventListener("click", check);
+    input.addEventListener("keydown", function (e) {
+      if (e.key === "Enter") { e.preventDefault(); check(); }
+    });
+  }
+
+  // ---- Render Activity I ----
+  var gridFree = document.getElementById("gridFree");
+  FREE_ITEMS.forEach(function (item, i) {
+    var id = "free" + i;
+    var card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML =
+      '<p class="sentence"><span class="qnum">' + ROMAN[i] + '.</span>' + item.sentence + '</p>' +
+      '<div class="answer-row">' +
+        '<div class="answer-field">' +
+          '<label class="field-label" for="' + id + '-input">Your Answer</label>' +
+          '<input type="text" id="' + id + '-input" autocomplete="off">' +
+        '</div>' +
+        '<button class="check-btn" type="button" id="' + id + '-check">Check</button>' +
+        '<span class="badge" id="' + id + '-badge" role="status" aria-live="polite"></span>' +
+      '</div>';
+    gridFree.appendChild(card);
+    wireField(card, id, item.answer);
+  });
+
+  // ---- Render Activity II ----
+  var gridWords = document.getElementById("gridWords");
+  WORD_ITEMS.forEach(function (item, i) {
+    var id = "word" + i;
+    var num = FREE_ITEMS.length + i;
+
+    function fieldRow(fieldId, labelText) {
+      return '<div class="answer-row">' +
+        '<div class="answer-field">' +
+          '<label class="field-label" for="' + fieldId + '-input">' + labelText + '</label>' +
+          '<input type="text" id="' + fieldId + '-input" autocomplete="off">' +
+        '</div>' +
+        '<button class="check-btn" type="button" id="' + fieldId + '-check">Check</button>' +
+        '<span class="badge" id="' + fieldId + '-badge" role="status" aria-live="polite"></span>' +
+      '</div>';
+    }
+
+    var card = document.createElement("div");
+    card.className = "card";
+    card.innerHTML =
+      '<p class="word-heading"><span class="qnum">' + ROMAN[num] + '.</span><span class="latin-word">' + item.word + '</span></p>' +
+      fieldRow(id + "-meaning", "Meaning") +
+      fieldRow(id + "-sg", "Accusative Singular") +
+      fieldRow(id + "-pl", "Accusative Plural");
+    gridWords.appendChild(card);
+
+    wireField(card, id + "-meaning", item.meaning);
+    wireField(card, id + "-sg", item.singular);
+    wireField(card, id + "-pl", item.plural);
+  });
+
+  // ---- Reset ----
+  document.getElementById("resetBtn").addEventListener("click", function () {
+    document.querySelectorAll('input[type="text"]').forEach(function (el) { el.value = ""; });
+    document.querySelectorAll(".badge").forEach(function (el) {
+      el.classList.remove("show");
+      el.className = "badge";
+      el.innerHTML = "";
+      el.removeAttribute("aria-label");
+    });
+    solved = {};
+    updateScore();
+  });
+</script>
+</body>
+</html>
